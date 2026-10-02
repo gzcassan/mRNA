@@ -1,0 +1,29 @@
+{
+  "transcript": "NM_026137.5",
+  "strand": "-",
+  "aa_position_1": 460,
+  "cds_position_1": 1379,
+  "reference_codon": "AGC",
+  "mutant_codon": "ATC",
+  "reference_protein_window": "KLQGHSAPVLDVSFNCDESLLASSD",
+  "rna_protein_window": "KLQGHSAPVLDVIVNCDESLLASSD",
+  "reference_rna_differences": [
+    {
+      "pos": 8125622,
+      "ref": "A",
+      "rna": "C"
+    },
+    {
+      "pos": 8125624,
+      "ref": "C",
+      "rna": "A"
+    },
+    {
+      "pos": 8125707,
+      "ref": "G",
+      "rna": "A"
+    }
+  ],
+  "window_base_support_min": 13,
+  "bam_sam_records_verified": 300
+}

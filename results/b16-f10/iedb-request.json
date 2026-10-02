@@ -1,0 +1,6 @@
+{
+  "allele": "H-2-Kb,H-2-Db,H-2-Kb,H-2-Db,H-2-Kb,H-2-Db,H-2-Kb,H-2-Db",
+  "method": "netmhcpan_ba-4.1",
+  "length": "8,8,9,9,10,10,11,11",
+  "sequence_text": ">Wdr13_mut_RNA\nKLQGHSAPVLDVIVNCDESLLASSD\n>Wdr13_I460_reverted_RNA_background\nKLQGHSAPVLDVSVNCDESLLASSD\n>Wdr13_mm10_reference\nKLQGHSAPVLDVSFNCDESLLASSD"
+}

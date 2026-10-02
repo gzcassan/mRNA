@@ -1,0 +1,47 @@
+{
+  "upstream_repo": "https://github.com/openvax/vaxrank",
+  "reference_assembly": "mm10",
+  "sequence_numbers": {
+    "3": "mm10 reference S460 F461",
+    "1": "RNA observed I460 V461",
+    "2": "I460 reverted S460 V461 comparator, not observed matched normal"
+  },
+  "checks": [
+    "Upstream fixture SHA256",
+    "300 BAM records match SAM alignment and sequence fields",
+    "RNA counts match upstream Phip/Wdr13 expectations",
+    "Negative-strand RefSeq codon AGC to ATC",
+    "396 API rows, 76 target-position mutant pairs"
+  ],
+  "prediction_method": "netmhcpan_ba-4.1",
+  "date": "2026-10-02",
+  "python": "3.12.12",
+  "biopython": "1.88",
+  "transcript": "NM_026137.5",
+  "prediction_endpoint": "https://tools-cluster-interface.iedb.org/tools_api/mhci/",
+  "reference_track": "ncbiRefSeq",
+  "scope": "Direct read audit, local translation, API predictions, manual score; no full Vaxrank CLI or mRNA construct generation",
+  "sha256": {
+    "wdr13-mm10-genes.json": "aa0c23c99241d6a1c2bd7ac18c31b2bf0bd58cc3a763fc89ee4e748524703a8e",
+    "Wdr13-peptide-comparisons.tsv": "3d6a73767819272c0ba03cdd19f622ad0a7b969369ef965bced89f7fab413057",
+    "upstream-LICENSE.txt": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1",
+    "ranking.json": "7b1750ace254a0b9d92e0a66bf6afaab23c7e21c625735d3693f504a2dd95c12",
+    "wdr13-mm10-dna.json": "b6572589b2f8264416c44ab3456379a66bdbb03048b6babeb64e46ade5dba05c",
+    "Phip-reads.tsv": "1f12c99a7d3a12165bcc799070516768453d864fdd45bf4d5e0e134009840e48",
+    "translation.json": "693fd862d436988763fb98444e4bd57b994961e4af7ee2db29db77f037e1e974",
+    "aldh1b1-mm10-genes.json": "01eb423e48ac1178b7d1753dd12316e6021f720125824ce051b395603601e68e",
+    "iedb-ba.tsv": "38debb1a2b6af7a47500142c669cbb36f13a41f264dee7e0ed03f3d41101d96d",
+    "Wdr13-reads.tsv": "bcc8ec87c42da71b4efcdbe7fde4cc73c280510e000831d8312182cdb20e2dc8",
+    "iedb-request.json": "78bf28bdd696c438c3526f1625834bd4b5f215026404c2d92738fed4f2a3f0d4",
+    "Aldh1b1-reads.tsv": "218846edf3401f10d1eaa47728dbc0c25147694a4982b11b4784972ba910ea7d",
+    "summary.json": "bdf1109d4eaa0b90ae4c1f6bd712c8798c8fa5155f6345733bc1976139993a84",
+    "wdr13-mm10-full-gene.json": "142ec9941d88789b905dd909518de5a69dff25e54aff43c242b31bf3c5f28dfe"
+  },
+  "reference_urls": [
+    "https://api.genome.ucsc.edu/getData/sequence?genome=mm10;chrom=chrX;start=8125500;end=8125800",
+    "https://api.genome.ucsc.edu/getData/sequence?genome=mm10;chrom=chrX;start=8123300;end=8132858",
+    "https://api.genome.ucsc.edu/getData/track?genome=mm10;track=ncbiRefSeq;chrom=chrX;start=8125500;end=8125800",
+    "https://api.genome.ucsc.edu/getData/track?genome=mm10;track=ncbiRefSeq;chrom=chr4;start=45802538;end=45802539"
+  ],
+  "upstream_commit": "e108625abc3ec3e6408f9cb44c8be12710bb457b"
+}
