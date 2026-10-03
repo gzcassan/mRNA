@@ -1,7 +1,7 @@
 # 癌症治疗性 mRNA 疫苗：从基础概念到真实数据研究
 
-整理日期：2026-10-02
-文档版本：0.1.0
+整理日期：2026-10-03
+文档版本：0.2.0
 来源对话：ChatGPT「mRNA疫苗筛选与验证」（会话 ID：6abf0124-50a8-83e8-9dcb-18ed8b557cbc）
 用途：GitHub 研究笔记、后续复现计划和证据追踪基础。
 
@@ -9,7 +9,7 @@
 
 本次学习围绕一个问题展开：**如何从癌症患者的肿瘤组织与测序数据，筛出值得验证的新抗原，并形成治疗性 mRNA 疫苗候选设计？**
 
-当前已经完成概念学习、工作流梳理和公开案例来源核实。尚未下载 Pt02 原始数据、运行分析流程、复现候选排序或开展实验。下文中的“真实输出”指公开开发者报告中的结果，不是本研究独立生成的结果。
+当前已经完成概念学习、工作流梳理和公开案例来源核实；仓库另有 [B16-F10 实际证据追踪](b16-f10-first-variant-walkthrough.md)，记录 RNA reads 审计、局部翻译核对与实际 MHC 模型预测。本次整理没有重新运行该分析。Pt02 原始数据分析、候选排序复现、完整 Vaxrank 构建与实验验证尚未完成。下文中的 Pt02“真实输出”指公开开发者报告中的结果，不是本研究独立生成的结果。
 
 治疗性疫苗旨在帮助免疫系统识别已有肿瘤，与预防感染及其相关癌症的疫苗用途不同。[NCI：癌症治疗性疫苗](https://www.cancer.gov/about-cancer/treatment/types/immunotherapy/cancer-treatment-vaccines)
 
@@ -24,6 +24,7 @@
 | 验证闭环 | 预测好是否代表有效？ | 计算、体外、体内与人体研究回答不同层次的问题 |
 | 真实案例 | GitHub 上能看到什么？ | Hugo/IPRES Pt02 的 LENS 报告被用于 Vaxrank 的 mRNA 计算构建示例 |
 | 后续研究 | 如何亲自理解每一步？ | 先跑小型示例，再追踪 Pt02 报告，最后考虑原始数据复现 |
+| 系统学习 | 需要哪些课程、书与技能？ | 先补细胞与免疫学，再学癌症基因组分析、新抗原筛选和 mRNA 工程 |
 
 这是按主题整理的学习过程，不是逐字对话记录。早期关于病原体、中和抗体和群体覆盖率的讨论提供了基础，但不能原样套用到个体化癌症新抗原筛选。
 
@@ -57,6 +58,34 @@ DNA 中有突变
 经典 T 细胞受体识别的是**肽段–HLA 复合物**。HLA 是人类的主要组织相容性复合体：HLA-I 主要涉及 CD8 T 细胞识别，HLA-II 主要涉及 CD4 T 细胞识别。两类路线都值得关注，不能将所有抗肿瘤免疫简化为抗体反应。
 
 mRNA 疫苗的教学主线是：抗原呈递细胞摄取并翻译 mRNA，呈递抗原片段并启动 T 细胞反应；相应 T 细胞随后需要识别肿瘤细胞上天然呈递的靶点。[NCI：mRNA 疫苗如何帮助治疗癌症](https://www.cancer.gov/news-events/cancer-currents-blog/2022/mrna-vaccines-to-treat-cancer)
+
+### 3.4 mRNA 疫苗基础：临时说明书与递送
+
+mRNA 是信使 RNA，可以把它理解为“临时生产说明书”：递送系统帮助它进入细胞并释放到胞质，核糖体读取编码区，制造目标蛋白；随后 RNA 会被降解。常规 mRNA 疫苗的作用不需要进入细胞核或改写基因组。它通常编码抗原，而不是直接把抗体注射进去。
+
+常见设计包含 5′端帽、5′UTR、开放阅读框（ORF）、3′UTR 和 poly(A)。其中 ORF 决定蛋白序列，其余元件参与稳定性与翻译调控。核苷修饰、体外转录（IVT）、纯化及递送是不同的工程环节；LNP 是常见递送方式，但癌症 RNA 疫苗也有其他制剂路线。不能从核酸序列文件推断这些实体属性。[Pardi et al., 2018](https://pubmed.ncbi.nlm.nih.gov/29326426/)
+
+预防感染时可能关注中和抗体、T 细胞及保护效果；癌症新抗原研究更关注能否诱导识别天然肿瘤靶点的 T 细胞。两者都需要功能证据：表达高、抗体结合强或预测分数高，分别只支持因果链中的一部分。
+
+### 3.5 mRNA 在癌症中的应用
+
+| 方向 | 编码内容与研究目的 | 与本课题的关系 |
+| --- | --- | --- |
+| 个体化新抗原疫苗 | 患者特异的突变抗原，扩大相应 T 细胞反应 | 本笔记的主要路线 |
+| 共享肿瘤抗原疫苗 | 多位患者共有的肿瘤相关抗原 | 仍需考虑 HLA、耐受和正常组织表达 |
+| 免疫刺激蛋白 | 细胞因子等免疫调节分子 | 调整免疫环境，不等同于新抗原选择 |
+| 抗体或治疗蛋白 | 让细胞短暂生产治疗性蛋白 | 是 mRNA 治疗应用，未必属于疫苗 |
+| 细胞治疗辅助 | 通过 mRNA 暂时赋予免疫细胞受体等功能 | 需单独评估细胞功能与持续时间 |
+
+这些方向有不同的研究与临床证据，不能因为使用 mRNA 就认为已证明安全有效。关于免疫调节、抗体表达与癌症疫苗路线，可从 [Pardi 等综述](https://pubmed.ncbi.nlm.nih.gov/29326426/) 入手；本文不提供截至整理日期的审批状态清单。
+
+疫苗希望启动或扩大靶向抗原的反应；PD-1/PD-L1 等检查点抑制策略希望减轻部分免疫抑制，因此有联合研究的逻辑，但两者均不能自动克服所有免疫逃逸。[NCI：癌症 mRNA 疫苗](https://www.cancer.gov/news-events/cancer-currents-blog/2022/mrna-vaccines-to-treat-cancer)
+
+### 3.6 HLA 与 T 细胞：展示、识别和激活是三件事
+
+HLA 可以比作“展示架”，肽段是展示内容，TCR 是识别肽–HLA 组合的受体。患者 HLA 等位基因不同，同一肽的呈递机会也可能不同。HLA-I 通常呈递较短肽段并涉及 CD8 T 细胞；HLA-II 可呈递较长肽段并涉及 CD4 T 细胞。疫苗编码的长抗原窗口与最终展示的表位并不是同一个长度概念。
+
+启动初始 T 细胞通常还需要抗原呈递细胞提供共刺激与适当信号。肿瘤靶细胞是否保留 HLA、是否天然呈递对应肽，以及 T 细胞能否进入肿瘤并发挥功能，都是后续独立问题。仅测肽–HLA 结合，不能替代这些问题的验证。[MIT：细胞与分子免疫学课程](https://ocw.mit.edu/courses/hst-176-cellular-and-molecular-immunology-fall-2005/)
 
 ## 4. “从癌症切片开始”的准确含义
 
@@ -196,7 +225,7 @@ RAFT 文档列出 `HugoLo_IPRES_2016` 下载与运行入口，但本次没有实
 
 任务：解释一条 VCF 记录；核对相应 RNA 支持；追踪突变蛋白、候选肽、预测分数与排序结果。区分测试用随机预测器与真实生物学预测器：前者只能验证软件流程。
 
-**完成标准：** 保存版本与命令、输入校验值、日志及一条候选的完整证据追踪；能解释为什么保留或排除。尚未完成。
+**完成标准：** 保存版本与命令、输入校验值、日志及一条候选的完整证据追踪；能解释为什么保留或排除。仓库已有 [局部证据追踪](b16-f10-first-variant-walkthrough.md)，但完整 Vaxrank 排序与构建仍待完成；本次没有重新验证其运行产物。
 
 ### 阶段二：Pt02 预计算报告，复现报告到构建
 
@@ -242,11 +271,69 @@ results/run-summary.md
 - 构建中每段序列和预测表位如何对应？是否产生新的连接区表位？
 - 是否存在这些具体候选的天然呈递、T 细胞功能或肿瘤杀伤证据？本次尚未建立这些证据。
 
-**近期最有价值的动作：先完成一个小型示例中“一条突变 → RNA 支持 → 肽–MHC 预测 → 排序”的证据追踪，再取得 Pt02 报告。**
+**近期最有价值的动作：在已有 B16-F10 局部证据基础上补全排序与构建追踪，再取得 Pt02 报告。**
 
-## 12. 参考资料
+## 12. 推荐课程、书籍与学习路线
 
-以下来源于 2026-10-02 核查。项目网页会变化；实际复现应补充固定 commit 或归档版本。
+### 12.1 按问题学习，而不是堆积工具名称
+
+| 模块 | 需要理解的内容 | 学习完成后的可检查产物 |
+| --- | --- | --- |
+| 细胞、分子生物学与遗传学 | DNA/RNA/蛋白、转录、翻译、剪接、突变和信号传导 | 画出表达链，解释 RNA 与蛋白证据的区别 |
+| 免疫学 | 先天/适应性免疫、B/T 细胞、HLA、TCR、树突细胞、耐受与检查点 | 解释 HLA 结合、呈递、T 细胞识别和激活的区别 |
+| 癌症生物学 | 癌基因、抑癌基因、驱动/乘客突变、克隆演化、异质性与微环境 | 解释候选靶点为何可能被肿瘤丢失或绕过 |
+| 生物信息学与统计 | Linux、Python、Git、R、质控、假设检验和多重比较 | 能阅读 FASTQ、BAM、VCF、FASTA 与注释文件 |
+| 癌症基因组学 | 配对肿瘤/正常变异检测、RNA 支持、转录本、拷贝数与纯度 | 追踪一条变异的参考体系与证据来源 |
+| 新抗原与 mRNA 工程 | HLA 分型、预测与排序、UTR/ORF、递送和功能验证 | 完成一个候选的证据表及构建审查表 |
+
+结构生物学和机器学习适合作为后续选修：先理解蛋白结构、PDB/PyMOL 和模型评估，再考虑结构预测、对接或分子动力学。AlphaFold、对接分数与 RNA 最低自由能都不能单独证明免疫原性或临床有效性。
+
+### 12.2 课程入口
+
+| 课程 | 用途与建议学习顺序 |
+| --- | --- |
+| [MIT 7.016 Introductory Biology](https://ocw.mit.edu/courses/7-016-introductory-biology-fall-2018/resources/lecture-videos/) | 起步补细胞、遗传和生化；再看癌症与免疫学讲次 |
+| [MIT 7.28x Molecular Biology](https://ocw.mit.edu/courses/res-7-008-7-28x-molecular-biology/) | 深入转录、RNA 加工与翻译，理解表达证据 |
+| [MIT HST.176 Cellular and Molecular Immunology](https://ocw.mit.edu/courses/hst-176-cellular-and-molecular-immunology-fall-2005/) | 学抗原加工、MHC 与免疫受体；属于历史课程，前沿内容需补读论文 |
+| [Johns Hopkins：Genomic Data Science](https://www.coursera.org/specializations/genomic-data-science) | 补测序数据、命令行、Python/R 和统计分析 |
+| [UC San Diego：Bioinformatics](https://www.coursera.org/specializations/bioinformatics) | 偏序列分析与算法，适合已有编程基础后学习 |
+
+上述是课程官网入口，不保证特定日期的免费权限、证书价格或开课形式；按知识缺口选模块，不必全部学完。
+
+### 12.3 书单与阅读重点
+
+建议首先使用以下五本，阅读顺序属于学习建议，不是必须购买的清单。细胞生物学、Janeway 与癌症教材可从 [Norton 生物学教材目录](https://wwnorton.co.uk/subjects/textbooks/biological-sciences) 核对；章节编号随版本变化，按主题查目录。
+
+| 顺序 | 书籍 | 优先阅读内容 |
+| --- | --- | --- |
+| 1 | *Essential Cell Biology* — Alberts 等 | DNA、RNA、蛋白、基因表达、细胞信号 |
+| 2 | [*Cellular and Molecular Immunology* — Abbas、Lichtman、Pillai](https://shop.elsevier.com/books/cellular-and-molecular-immunology/abbas/978-0-323-75748-5) | 抗原呈递、T 细胞激活、耐受、肿瘤免疫 |
+| 3 | *Janeway’s Immunobiology* | 深入抗原识别、MHC、B/T 细胞及免疫调控 |
+| 4 | *The Biology of Cancer* — Robert A. Weinberg | 癌症基因、演化、异质性、微环境与免疫逃逸 |
+| 5 | [*Bioinformatics Algorithms* — Phillip Compeau、Pavel Pevzner](https://www.bioinformaticsalgorithms.org/) | 序列比对、组装及算法思维，配合习题实践 |
+
+进阶参考可以用 *Molecular Biology of the Cell*（Alberts 等）；原对话也提及 Robert F. Weaver 的 *Molecular Biology*，可作为转录、翻译主题补充，不必与入门书同时通读。第一次学习免疫学可先读 Abbas，再用 Janeway 深入。
+
+mRNA 工程部分优先读综述与方法论文：[Pardi et al., 2018](https://pubmed.ncbi.nlm.nih.gov/29326426/) 用于建立技术全景；[Sahin et al., 2017](https://www.nature.com/articles/nature23003) 是个体化 RNA 新抗原疫苗的人体研究入口。后者与 Hugo/IPRES 数据再分析是不同研究。读论文时分别摘录样本量、疫苗平台、免疫读出、临床终点及设计限制；早期免疫反应证据不能单独证明普遍临床获益。
+
+### 12.4 与真实数据并行的阶段路线
+
+以下时间只作安排参考，按已有背景调整，不代表可在该时间内获得独立研发资格。
+
+1. **基础阶段，约 2–4 周：** 读 Essential Cell Biology 与 Abbas 的相关主题，画出 DNA → RNA → 蛋白 → 肽–HLA → TCR 的链条；逐项说明什么证据还缺失。
+2. **数据阶段，约 1–2 个月：** 学 Linux、Python（pandas、NumPy、绘图、Biopython/pysam）、Git 和基础统计；读懂 FASTQ/FASTA、SAM/BAM、VCF、BED、GTF/GFF。同时阅读 Weinberg 的突变、演化与免疫逃逸主题。
+3. **上游分析阶段，约 1–2 个月：** 在小型、来源明确的数据上理解质控 → DNA/RNA 各自比对 → 体细胞检测 → 注释。可认识 FastQC、BWA、STAR、Samtools、Mutect2 和 VEP；先选一条路线，不必掌握所有替代工具。RNA 表达定量不等同于突变转录本重建。
+4. **新抗原阶段：** 沿仓库 B16-F10 记录核对 RNA 证据与肽–MHC 结果；再研究 Vaxrank/pVACtools，以及 HLA 分型和 NetMHCpan/MHCflurry 的适用范围。人类 HLA 与小鼠 MHC 要分开记录。
+5. **Pt02 阶段：** 取得真实 LENS 报告并固定版本，从报告列到排序表、mRNA 构建和 manifest 逐项追踪；此阶段不声称重新分析了 FASTQ。
+6. **工程与验证阶段：** 学端帽、UTR、ORF、poly(A)、密码子、RNA 结构、核苷修饰、IVT、纯化与递送；依据第 7 节设计表达、天然呈递、T 细胞识别、肿瘤杀伤及正常细胞对照的验证问题。
+
+如果后续选择 AI 方向，再补线性代数、概率统计、优化与 PyTorch。模型评估应按患者或适当独立单位划分数据，防止同源肽和重复样本泄漏；保留独立测试集与基线。目标是解释候选选择是否改善，而不是用一个分数替代生物学验证。
+
+**学习验收：** 拿到一组来源明确的变异、RNA 和 HLA 信息后，能解释一个候选从何而来、为何被保留或排除、能支持哪些结论、哪些环节尚未验证，并保存可追踪产物。读书与实践应交替推进，以实际能力决定节奏。
+
+## 13. 参考资料
+
+原始来源清单于 2026-10-02 建立；2026-10-03 再次核对 Hugo 论文、GEO 入口、Vaxrank 仓库与 Issue #270，并补充课程和书籍官网。数据下载和计算复现未在本次整理中执行。项目网页会变化；实际复现应补充固定 commit 或归档版本。
 
 1. [Hugo et al.：Genomic and Transcriptomic Features of Response to Anti-PD-1 Therapy in Metastatic Melanoma，Cell，2016，DOI: 10.1016/j.cell.2016.02.065](https://pmc.ncbi.nlm.nih.gov/articles/PMC4808437/)
 2. [GEO：GSE78220](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE78220)
@@ -259,8 +346,14 @@ results/run-summary.md
 9. [NCI：Cancer Treatment Vaccines](https://www.cancer.gov/about-cancer/treatment/types/immunotherapy/cancer-treatment-vaccines)
 10. [NCI：How mRNA Vaccines Might Help Treat Cancer](https://www.cancer.gov/news-events/cancer-currents-blog/2022/mrna-vaccines-to-treat-cancer)
 
-## 13. 版本记录
+11. [Pardi et al.：mRNA vaccines — a new era in vaccinology，2018，DOI: 10.1038/nrd.2017.243](https://pubmed.ncbi.nlm.nih.gov/29326426/)
+12. [Sahin et al.：Personalized RNA mutanome vaccines mobilize poly-specific therapeutic immunity against cancer，2017，DOI: 10.1038/nature23003](https://www.nature.com/articles/nature23003)
+
+课程与教材的官方入口见第 12 节。
+
+## 14. 版本记录
 
 | 版本 | 日期 | 内容 |
 | --- | --- | --- |
 | 0.1.0 | 2026-10-02 | 整理学习过程、验证链、Pt02 来源及分阶段研究路线；尚未执行数据复现 |
+| 0.2.0 | 2026-10-03 | 补全 mRNA 基础、癌症应用、HLA/T 细胞逻辑、课程书单与学习路线；同步仓库已有 B16-F10 局部分析进度 |
